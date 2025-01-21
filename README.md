@@ -1,82 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMS Home</title>
+    <title>Sprang Staal LMS - Home</title>
 </head>
 <body>
-    <h1>Welcome to the Learning Management System</h1>
-    <p>This is your portal for professional growth and development.</p>
-    <a href="/login">Login</a>
+    <h1>Welkom bij het Sprang Staal Learning Management System</h1>
+    <p>Ontwikkel je vaardigheden en volg je voortgang eenvoudig.</p>
+    <a href="/login">Inloggen</a>
 </body>
 </html>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Inloggen</title>
 </head>
 <body>
-    <h1>Login</h1>
+    <h1>Inloggen in LMS</h1>
     <form method="POST">
-        <label for="username">Username:</label><br>
+        <label for="username">Gebruikersnaam:</label><br>
         <input type="text" id="username" name="username" required><br><br>
         
-        <label for="password">Password:</label><br>
+        <label for="password">Wachtwoord:</label><br>
         <input type="password" id="password" name="password" required><br><br>
         
-        <button type="submit">Login</button>
+        <button type="submit">Inloggen</button>
     </form>
-    <p>Don't have an account? Contact your administrator.</p>
+    <p>Hulp nodig? Neem contact op met de beheerder.</p>
 </body>
 </html>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>Welcome, {{ user.username }}</h1>
-    <h2>Available Trainings</h2>
+    <h1>Welkom, {{ user.username }}</h1>
+    <h2>Beschikbare trainingen:</h2>
     <ul>
         {% for training in trainings %}
             <li>
                 <strong>{{ training.title }}</strong>: {{ training.description }}<br>
-                Progress: {{ training.progress }}%
-                <form method="POST" action="/update_progress/{{ training.id }}">
-                    <label for="progress">Update Progress (%):</label>
+                Verplicht: {{ 'Ja' if training.mandatory else 'Nee' }}<br>
+                <a href="/pdp">Toevoegen aan PDP</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <h2>Jouw Persoonlijke Ontwikkelplannen (PDP's):</h2>
+    <ul>
+        {% for pdp in pdps %}
+            <li>
+                <strong>Training:</strong> {{ pdp.training_id }}<br>
+                <strong>Doel:</strong> {{ pdp.goal }}<br>
+                <strong>Status:</strong> {{ pdp.status }}<br>
+                <form method="POST" action="/update_progress/{{ pdp.id }}">
+                    <label for="progress">Voortgang bijwerken (%):</label>
                     <input type="number" name="progress" min="0" max="100" required>
-                    <button type="submit">Update</button>
+                    <button type="submit">Bijwerken</button>
                 </form>
             </li>
         {% endfor %}
     </ul>
-    <a href="/add_training">Add New Training</a> | <a href="/logout">Logout</a>
+    <a href="/add_training">Nieuwe training toevoegen</a> | <a href="/logout">Uitloggen</a>
 </body>
 </html>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Training</title>
+    <title>Training Toevoegen</title>
 </head>
 <body>
-    <h1>Add a New Training</h1>
+    <h1>Nieuwe Training Toevoegen</h1>
     <form method="POST">
-        <label for="title">Title:</label><br>
+        <label for="title">Titel van de training:</label><br>
         <input type="text" id="title" name="title" required><br><br>
         
-        <label for="description">Description:</label><br>
+        <label for="description">Beschrijving:</label><br>
         <textarea id="description" name="description" rows="4" required></textarea><br><br>
         
-        <button type="submit">Add Training</button>
+        <label for="mandatory">Verplicht:</label>
+        <input type="checkbox" id="mandatory" name="mandatory"><br><br>
+        
+        <button type="submit">Toevoegen</button>
     </form>
-    <a href="/dashboard">Back to Dashboard</a>
+    <a href="/dashboard">Terug naar Dashboard</a>
 </body>
 </html>
-
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDP Aanmaken</title>
+</head>
+<body>
+    <h1>Maak jouw Persoonlijk Ontwikkelplan (PDP)</h1>
+    <form method="POST">
+        <label for="training_id">Selecteer een training:</label><br>
+        <select id="training_id" name="training_id" required>
+            {% for training in trainings %}
+                <option value="{{ training.id }}">{{ training.title }}</option>
+            {% endfor %}
+        </select><br><br>
+        
+        <label for="goal">Jouw doel:</label><br>
+        <textarea id="goal" name="goal" rows="4" required></textarea><br><br>
+        
+        <button type="submit">PDP Aanmaken</button>
+    </form>
+    <a href="/dashboard">Terug naar Dashboard</a>
+</body>
+</html>
